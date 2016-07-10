@@ -12,13 +12,12 @@ OBJS        =
 LDFLAGS     = -g $(DEPS)
 # /////////////////////////////////////////////////////////////////////////
 
-all: test_FIFO test_sFIFO
+all: Logger.o test_Logger 
 
-test_FIFO: test_FIFO.cpp
-	$(CPP) $(CPPFLAGS) -o test_FIFO test_FIFO.cpp FIFO.hpp $(OBJS) $(LDFLAGS)
-
-test_sFIFO: test_sFIFO.cpp
-	$(CPP) $(CPPFLAGS) -o test_sFIFO test_sFIFO.cpp sFIFO.hpp $(OBJS) $(LDFLAGS)
+Logger.o: Logger.cpp
+	$(CPP) $(CPPFLAGS) -c Logger.cpp $(OBJS) $(LDFLAGS)
+test_Logger: test_Logger.cpp
+	$(CPP) $(CPPFLAGS) -o test_Logger test_Logger.cpp ./Logger.o $(OBJS) $(LDFLAGS)
 
 clean:
-	-rm -f *.o; rm test_FIFO; rm test_sFIFO
+	-rm -f *.o; rm test_Logger
