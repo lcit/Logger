@@ -79,14 +79,14 @@ public:
 		pthread_cond_destroy(&_condv);
 	}
 
-	public:	
-		/// Adds an item into the FIFO. (Thread-safe)
-		///
-		/// If the FIFO is full FIFOdumpTypes defines which item is dumped.
-		///
-		/// @param item: element to push into the fifo
-		/// @return no return
-		int push(T& item){
+public:	
+	/// Adds an item into the FIFO. (Thread-safe)
+	///
+	/// If the FIFO is full FIFOdumpTypes defines which item is dumped.
+	///
+	/// @param item: element to push into the fifo
+	/// @return no return
+	int push(T& item){
 		int succ = 0;
 		int res = pthread_mutex_lock(&_mutex);
 		if(res < 0)
