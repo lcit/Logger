@@ -44,20 +44,20 @@ enum class FIFOdumpTypes {
 template <typename T, FIFOdumpTypes dump_type> class FIFO{
 	
 	protected:
-		queue<T> 		_queue;
-		int			    _max_size; 
+		queue<T>		_queue;
+		int				_max_size; 
 		pthread_cond_t	_condv; 
 		pthread_mutex_t	_mutex;
 
 	public:
 		FIFO() : _max_size(10.0){
 			// init the mutexe and the conditional variable
-            int res = pthread_mutex_init(&_mutex, NULL);	
+			int res = pthread_mutex_init(&_mutex, NULL);	
 			if(res < 0)
-                throw std::runtime_error("FIFO::FIFO(): pthread_mutex_init() failed due to \"" + std::string(std::strerror(res)) + "\"");
+				throw std::runtime_error("FIFO::FIFO(): pthread_mutex_init() failed due to \"" + std::string(std::strerror(res)) + "\"");
 			res = pthread_cond_init(&_condv, NULL);
-            if(res < 0)
-                throw std::runtime_error("FIFO::FIFO(): pthread_cond_init() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			if(res < 0)
+				throw std::runtime_error("FIFO::FIFO(): pthread_cond_init() failed due to \"" + std::string(std::strerror(res)) + "\"");
 		}
 		FIFO(int size) : _max_size(size){
 			// init the mutexe and the conditional variable
