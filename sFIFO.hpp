@@ -3,9 +3,9 @@
 	Company: 
 	Filename: sFIFO.hpp
 	Last modifed: 10.07.2016 by Leonardo Citraro
-					Description: Thread-safe FIFO based on the Standard C++ library queue
-					template class. This FIFO can be used when ITEMs' size is in seconds
-					as for video frames. Therefore, the FIFO's size is in seconds.
+	Description: Thread-safe FIFO based on the Standard C++ library queue
+				template class. This FIFO can be used when ITEMs' size is in seconds
+				as for video frames. Therefore, the FIFO's size is in seconds.
 
 =========================================================================
 
@@ -33,10 +33,10 @@ using namespace std;
 ///
 ///     class ITEM {
 ///     	public:
-///     		std::string _value;
-///             const float _size_seconds = 1.2;
-///     		ITEM(const std::string& value):_value(value){}
-///     		float get_size_seconds(){return _size_seconds;}
+///				std::string _value;
+///				const float _size_seconds = 1.2;
+///				ITEM(const std::string& value):_value(value){}
+///				float get_size_seconds(){return _size_seconds;}
 ///     };
 ///
 ///     sFIFO<std::unique_ptr<ITEM>, FIFOdumpTypes::DumpNewItem> fifo(5);

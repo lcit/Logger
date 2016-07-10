@@ -18,7 +18,7 @@ The derived class sFIFO is intended to be used with frames that are measured in 
      class ITEM {
      	public:
      		std::string _value;
-             const float _size_seconds = 1.2;
+            const float _size_seconds = 1.2;
      		ITEM(const std::string& value):_value(value){}
      		float get_size_seconds(){return _size_seconds;}
      };
