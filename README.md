@@ -1,6 +1,6 @@
 ## Lightweight thread-safe singleton logger written in C++
 
-You just need to add #include<Logger.hpp> into your code and enjoy logging!
+You just need to add `#include<Logger.hpp>` into your code and enjoy logging!
 
 ```
 Example usage:
