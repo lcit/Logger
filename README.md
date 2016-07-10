@@ -1,7 +1,8 @@
-Thread-safe FIFO buffer written in C++
+## Thread-safe FIFO buffer written in C++
 
 Using std::unique_ptr<ITEM> as FIFO type is good practice if your ITEM is big in size.
 
+```
 /// Example usage:
 ///
 ///     FIFO<std::unique_ptr<float>, FIFOdumpTypes::DumpNewItem> fifo(5);
@@ -9,9 +10,9 @@ Using std::unique_ptr<ITEM> as FIFO type is good practice if your ITEM is big in
 ///     fifo.push(temp);
 ///     int size = fifo.size();
 ///     fifo.pull(temp);
-
+```
 The derived class sFIFO is intended to be used with frames that are measured in seconds:
-
+```
 /// Example usage:
 ///
 ///     class ITEM {
@@ -27,3 +28,4 @@ The derived class sFIFO is intended to be used with frames that are measured in 
 ///     fifo.push(temp);
 ///     float size = fifo.size(); // <-- this value is in seconds
 ///     fifo.pull(temp);
+```
