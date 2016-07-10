@@ -43,14 +43,14 @@ enum class FIFOdumpTypes {
 ///
 template <typename T, FIFOdumpTypes dump_type> class FIFO{
 	
-	protected:
+    protected:
 		queue<T>         _queue; 
 		int              _max_size;  
 		pthread_cond_t   _condv; 
 		pthread_mutex_t  _mutex;
 
 	public:
-		FIFO() : _max_size(10.0){
+        FIFO() : _max_size(10.0){
 			// init the mutexe and the conditional variable
 			int res = pthread_mutex_init(&_mutex, NULL);	
 			if(res < 0)
@@ -61,36 +61,36 @@ template <typename T, FIFOdumpTypes dump_type> class FIFO{
 		}
 		FIFO(int size) : _max_size(size){
 			// init the mutexe and the conditional variable
-            int res = pthread_mutex_init(&_mutex, NULL);
+			int res = pthread_mutex_init(&_mutex, NULL);
 			if(res < 0)
-                throw std::runtime_error("FIFO::FIFO(): pthread_mutex_init() failed due to \"" + std::string(std::strerror(res)) + "\"");
-            res = pthread_cond_init(&_condv, NULL);
+				throw std::runtime_error("FIFO::FIFO(): pthread_mutex_init() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			res = pthread_cond_init(&_condv, NULL);
 			if(res < 0)
-                throw std::runtime_error("FIFO::FIFO(): pthread_cond_init() failed due to \"" + std::string(std::strerror(res)) + "\"");
+				throw std::runtime_error("FIFO::FIFO(): pthread_cond_init() failed due to \"" + std::string(std::strerror(res)) + "\"");
 		}
 		virtual ~FIFO(){
 			// pthread_mutex_destroy() and pthread_cond_destroy() may fail if functions like  
 			// pthread_cond_timedwait() or pthread_cond_wait() are active
-            int res = pthread_mutex_destroy(&_mutex);
-            if(res < 0){
+			int res = pthread_mutex_destroy(&_mutex);
+			if(res < 0){
 				pthread_cond_signal(&_condv);
 				pthread_mutex_destroy(&_mutex);
 			}
-            pthread_cond_destroy(&_condv);
+			pthread_cond_destroy(&_condv);
 		}
 
-	public:	
-		/// Adds an item into the FIFO. (Thread-safe)
-		///
-		/// If the FIFO is full FIFOdumpTypes defines which item is dumped.
-        ///
-        /// @param item: element to push into the fifo
-        /// @return no return
-		int push(T& item){
-            int succ = 0;
+		public:	
+			/// Adds an item into the FIFO. (Thread-safe)
+			///
+			/// If the FIFO is full FIFOdumpTypes defines which item is dumped.
+			///
+			/// @param item: element to push into the fifo
+			/// @return no return
+			int push(T& item){
+			int succ = 0;
 			int res = pthread_mutex_lock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::push(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			if(res < 0)
+				throw std::runtime_error("FIFO::push(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
 			// if the FIFO is full one item is dumped
 			if(is_full_helper()){
 				// choose dumping method
@@ -103,7 +103,7 @@ template <typename T, FIFOdumpTypes dump_type> class FIFO{
 				}else{
 					; // dump the new item
 				} 
-                succ = -1;
+				succ = -1;
 			}else{ 
 				// add item to the FIFO
 				push_last(item); 
@@ -111,22 +111,22 @@ template <typename T, FIFOdumpTypes dump_type> class FIFO{
 			// pthread_cond_signal() fails only if _condv is not initialized, so we don't need to take care of errors here
 			pthread_cond_signal(&_condv);
 			res = pthread_mutex_unlock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::push(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
-            return succ;
+			if(res < 0)
+				throw std::runtime_error("FIFO::push(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			return succ;
 		}
     
-        /// Retrieves an item from the FIFO. (Thread-safe)
+		/// Retrieves an item from the FIFO. (Thread-safe)
 		///
 		/// The oldest element in the FIFO is pulled. If the fifo is empty
-        /// this function blocks until new data are available.
-        ///
-        /// @param item: element pulled from the fifo
-        /// @return no return
+		/// this function blocks until new data are available.
+		///
+		/// @param item: element pulled from the fifo
+		/// @return no return
 		void pull(T& item){
 			int res = pthread_mutex_lock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::pull(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			if(res < 0)
+				throw std::runtime_error("FIFO::pull(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
 
 			// if FIFO is empty wait until new data is avvailable.			
 			// This while loop is necessary if there are multiple 
@@ -137,87 +137,87 @@ template <typename T, FIFOdumpTypes dump_type> class FIFO{
 			} 
 			item = pull_pop_first();
 			res = pthread_mutex_unlock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::push(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			if(res < 0)
+				throw std::runtime_error("FIFO::push(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
 		}
 		
 		/// Returns the current number of item stocked. (Thread-safe)
-        ///
-        /// @param no param
-        /// @return current number of item in the fifo
+		///
+		/// @param no param
+		/// @return current number of item in the fifo
 		int size(){
 			int res = pthread_mutex_lock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::size(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			if(res < 0)
+				throw std::runtime_error("FIFO::size(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
 			int size = size_helper();
 			res = pthread_mutex_unlock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::size(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			if(res < 0)
+				throw std::runtime_error("FIFO::size(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
 			return size;
 		}
 		
 		/// Sets the max FIFO size. (Thread-safe)
-        ///
-        /// @param size: max fifo size
-        /// @return no param
+		///
+		/// @param size: max fifo size
+		/// @return no param
 		void set_max_size(int size){
 			int res = pthread_mutex_lock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::set_max_size(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			if(res < 0)
+				throw std::runtime_error("FIFO::set_max_size(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
 			set_max_size_helper(size);
 			res = pthread_mutex_unlock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::set_max_size(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			if(res < 0)
+				throw std::runtime_error("FIFO::set_max_size(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
 		}
 		
 		/// Gets the max FIFO size. (Thread-safe)
-        ///
-        /// @param no param
-        /// @return max fifo size
+		///
+		/// @param no param
+		/// @return max fifo size
 		int get_max_size(){
 			int res = pthread_mutex_lock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::get_max_size(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			if(res < 0)
+				throw std::runtime_error("FIFO::get_max_size(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
 			int size = get_max_size_helper();
 			res = pthread_mutex_unlock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::get_max_size(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			if(res < 0)
+				throw std::runtime_error("FIFO::get_max_size(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
 			return size;
 		}
 		
 		/// Delete all the items. (Thread-safe)
-        ///
-        /// @param no param
-        /// @return no param
+		///
+		/// @param no param
+		/// @return no param
 		void clear(){
-            int res = pthread_mutex_lock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::clear(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
-            try{
-                clear_helper();
-            }catch(...){
-                pthread_mutex_unlock(&_mutex);
-                throw;
-            }
-            res = pthread_mutex_unlock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::clear(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			int res = pthread_mutex_lock(&_mutex);
+			if(res < 0)
+				throw std::runtime_error("FIFO::clear(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			try{
+				clear_helper();
+			}catch(...){
+				pthread_mutex_unlock(&_mutex);
+				throw;
+			}
+			res = pthread_mutex_unlock(&_mutex);
+			if(res < 0)
+				throw std::runtime_error("FIFO::clear(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
 		}
         
-        /// Check if FIFO is full. (Thread-safe)
-        ///
-        /// @param no param
-        /// @return no param
+		/// Check if FIFO is full. (Thread-safe)
+		///
+		/// @param no param
+		/// @return no param
 		bool is_full(){
 			bool succ;
-            int res = pthread_mutex_lock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::clear(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
-            succ = is_full_helper();
-            res = pthread_mutex_unlock(&_mutex);
-            if(res < 0)
-                throw std::runtime_error("FIFO::clear(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
-            return succ;
+			int res = pthread_mutex_lock(&_mutex);
+			if(res < 0)
+				throw std::runtime_error("FIFO::clear(): pthread_mutex_lock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			succ = is_full_helper();
+			res = pthread_mutex_unlock(&_mutex);
+			if(res < 0)
+				throw std::runtime_error("FIFO::clear(): pthread_mutex_unlock() failed due to \"" + std::string(std::strerror(res)) + "\"");
+			return succ;
 		}
         
 		
@@ -225,65 +225,65 @@ template <typename T, FIFOdumpTypes dump_type> class FIFO{
 		// the following functions are not thread-safe but
 		// are useful when subclassing this template.
 		// see sFIFO for more details	
-		
+
 		/// Checks if FIFO is full
-        ///
-        /// @param no param
-        /// @return true or false
+		///
+		/// @param no param
+		/// @return true or false
 		virtual bool is_full_helper(){
 			return (_queue.size() >= _max_size);
 		}	
-		
-        /// Gets the first item then pop it	
-        ///
-        /// @param no param
-        /// @return the item	
+
+		/// Gets the first item then pop it	
+		///
+		/// @param no param
+		/// @return the item	
 		virtual T pull_pop_first(){
 			// move() never throw
 			T item = std::move(_queue.front());
 			_queue.pop();
 			return std::move(item);
 		}		
-		
-        /// Add item into the FIFO
-        ///
-        /// @param item: the item to add
-        /// @return no return
+
+		/// Add item into the FIFO
+		///
+		/// @param item: the item to add
+		/// @return no return
 		virtual void push_last(T& item){
 			_queue.push(std::move(item)); 
 		}
-		
-        /// Clear whole FIFO
-        ///
-        /// @param no param
-        /// @return no param
+
+		/// Clear whole FIFO
+		///
+		/// @param no param
+		/// @return no param
 		virtual void clear_helper(){
 			std::queue<T> empty;
 			// swap() throws if T's constructor throws
 			std::swap(_queue,empty);
 		}
-		
+
 	protected:
 		/// Current FIFO's size
-        ///
-        /// @param no param
-        /// @return size of the fifo
+		///
+		/// @param no param
+		/// @return size of the fifo
 		int size_helper(){
 			return _queue.size();
 		}
-		
-        /// Set max FIFO's size
-        ///
-        /// @param size: max FIFO size
-        /// @return no param
+
+		/// Set max FIFO's size
+		///
+		/// @param size: max FIFO size
+		/// @return no param
 		void set_max_size_helper(int size){
 			_max_size = size;
 		}
-		
-        /// Get max FIFO's size
-        ///
-        /// @param no param
-        /// @return max FIFO size
+
+		/// Get max FIFO's size
+		///
+		/// @param no param
+		/// @return max FIFO size
 		int get_max_size_helper(){
 			return _max_size;
 		}
