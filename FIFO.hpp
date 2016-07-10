@@ -44,10 +44,10 @@ enum class FIFOdumpTypes {
 template <typename T, FIFOdumpTypes dump_type> class FIFO{
 	
 	protected:
-		queue<T>			_queue; 
-		int					_max_size;  
-		pthread_cond_t		_condv; 
-		pthread_mutex_t		_mutex;
+		queue<T>         _queue; 
+		int	             _max_size;  
+		pthread_cond_t   _condv; 
+		pthread_mutex_t  _mutex;
 
 	public:
 		FIFO() : _max_size(10.0){
