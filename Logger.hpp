@@ -1,13 +1,30 @@
-/*	=========================================================================
-	Author: Leonardo Citraro
-	Company: 
-	Filename: Logger.hpp
-	Last modifed: 10.07.2016 by Leonardo Citraro
-	Description:	Thread-safe singleton logger.
+/*  =========================================================================
+    Author: Leonardo Citraro
+    Company: 
+    Filename: Logger.hpp
+    Last modifed: 30.12.2016 by Leonardo Citraro
+    Description:    Thread-safe singleton logger.
 
-	=========================================================================
+    =========================================================================
+    Copyright (c) 2016 Leonardo Citraro <ldo.citraro@gmail.com>
 
-	=========================================================================
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this
+    software and associated documentation files (the "Software"), to deal in the Software
+    without restriction, including without limitation the rights to use, copy, modify,
+    merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to the following
+    conditions:
+
+    The above copyright notice and this permission notice shall be included in all copies
+    or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+    INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+    PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+    FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+    =========================================================================
 */
 #ifndef __LOGGER_HPP__
 #define __LOGGER_HPP__
@@ -77,43 +94,42 @@ void LOG__helper(const std::string& filename, const std::string& type, const std
 ///     LOG_CUSTOM("log2.txt", "another custom  message for log2.txt");
 ///     LOG_ERROR("log1.txt", "an error message for log.txt"); 
 class Logger{
-	
-	public:
-		static const std::string kLogLevelInfo; ///< string identifier for info logs.    
-		static const std::string kLogLevelError; ///< string identifier for error logs.
 
-		/// Returns a reference to the singleton Logger object
-		///
-		/// @param filename: name of the file where to log
-		/// @return singleton Logger instance
-		static Logger* instance(const std::string& filename);
+    public:
+        static const std::string kLogLevelInfo; ///< string identifier for info logs.    
+        static const std::string kLogLevelError; ///< string identifier for error logs.
 
-		/// Writes a message into the log file
-		///
-		/// @param msg: message to write
-		/// @return no return
-		void log(const std::string& msg);
+        /// Returns a reference to the singleton Logger object
+        ///
+        /// @param filename: name of the file where to log
+        /// @return singleton Logger instance
+        static Logger* instance(const std::string& filename);
 
-	protected:		
-		static std::vector<Logger*> vpInstance; ///< Ensemble of one-and-only instances
-		static std::vector<std::string> vLogNames; ///< Ensemble of log filenames
+        /// Writes a message into the log file
+        ///
+        /// @param msg: message to write
+        /// @return no return
+        void log(const std::string& msg);
 
-		/// Embedded class to make sure the single Logger
-		/// instance gets deleted on program shutdown.
-		friend class Cleanup;
-		class Cleanup{
-			public:
-				~Cleanup();
-		};
+    protected:
+        static std::vector<Logger*> vpInstance; ///< Ensemble of one-and-only instances
+        static std::vector<std::string> vLogNames; ///< Ensemble of log filenames
 
-	private:
-		std::string _filename;
-		static std::mutex sMutex;
-		Logger(const std::string& filename);
-		virtual ~Logger();
-		Logger(const Logger&);
-		Logger& operator=(const Logger&);
-		
+        /// Embedded class to make sure the single Logger
+        /// instance gets deleted on program shutdown.
+        friend class Cleanup;
+        class Cleanup{
+            public:
+                ~Cleanup();
+        };
+
+    private:
+        std::string _filename;
+        static std::mutex sMutex;
+        Logger(const std::string& filename);
+        virtual ~Logger();
+        Logger(const Logger&);
+        Logger& operator=(const Logger&);
 };
 
 #endif

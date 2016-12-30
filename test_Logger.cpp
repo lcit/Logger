@@ -1,35 +1,37 @@
-/*	=========================================================================
-	Author: Leonardo Citraro
-	Company: DOS-group
-	Filename: test_logger.cpp
-	Last modifed: 23.05.2016 by Leonardo Citraro
-	Description:	Testing the singleton logger class
-	=========================================================================
+/*  =========================================================================
+    Author: Leonardo Citraro
+    Company: 
+    Filename: test_functional.cpp
+    Last modifed: 30.12.2016 by Leonardo Citraro
+    Description:    Functional test.
 
-	=========================================================================
+    =========================================================================
+
+    =========================================================================
 */
-#include <iostream>
-#include <sstream>
-#include <unistd.h>
 #include "Logger.hpp"
 
-using namespace std;
-
 int main(int argc, char** argv){
-	
-	cout << "Testing the logger..." << endl;
 
-	int i= 2;
+    // cleanup
+    std::system("rm ./*.txt > /dev/null 2>&1; rm ./log* > /dev/null 2>&1");
+    
+    // log some simple messages
+    LOG_INFO("a log message");
+    LOG_ERROR("another log message");
+    LOG_CUSTOM("a custom log message");
 
-	LOG_INFO("another info message " << i);
-	LOG_ERROR("another error message " << i*3);
-	LOG_CUSTOM("[CUSTOM]:custom message " << i*4);
+    // make use of the stream feature (it works at run-time!)
+    int i = 2;
+    std::string str = "abcdef";
+    LOG_INFO("a log message " << i << " cont'd " << str);
+    LOG_ERROR("another log message " << i*3 << " cont'd " << str);
+    LOG_CUSTOM("a custom log message " << i*4<< " cont'd " << str);
 
-	LOG_INFO("log.txt", "another info message " << i);
-	LOG_ERROR("log.txt", "another error message " << i*3);
-	LOG_CUSTOM("log.txt", "[CUSTOM]:custom message " << i*4);
-	
-	cout << "You should have some log files in your current folder" << endl;
+    // save to another file
+    LOG_INFO("another.txt", "a log message " << i << " cont'd " << str);
+    LOG_ERROR("another.txt", "another log message " << i*3 << " cont'd " << str);
+    LOG_CUSTOM("another.txt", "a custom log message " << i*4<< " cont'd " << str);
 
-	return 0;
+    return 0;
 }
