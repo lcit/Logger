@@ -5,6 +5,8 @@ Just include the header `#include "Logger.hpp"` in your source file!
 
 ### Prerequisites
 
+nothing
+
 ### Example usage
 
 ```C++
@@ -40,7 +42,8 @@ The resulting files:
 [2016-12-30/07:26:38][INFO]:	a log message 2 cont'd abcdef
 [2016-12-30/07:26:38][ERROR]:	another log message 6 cont'd abcdef
 [2016-12-30/07:26:38]a custom log message 8 cont'd abcdef
-
+```
+```
 // another.txt
 [2016-12-30/07:26:38][INFO]:	a log message 2 cont'd abcdef
 [2016-12-30/07:26:38][ERROR]:	another log message 6 cont'd abcdef
