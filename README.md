@@ -1,7 +1,7 @@
 # C++ - Lightweight thread-safe singleton logger
 
 ### Usage
-Just include the header `#include <Logger.hpp>` in your source file!
+Just include the header `#include "Logger.hpp"` in your source file!
 
 ### Prerequisites
 
